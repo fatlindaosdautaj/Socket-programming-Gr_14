@@ -1,0 +1,61 @@
+[Thu Nov 13 22:22:29 2025] Server started
+[Thu Nov 13 22:23:39 2025] Server started
+[Thu Nov 13 22:24:06 2025] New client connected: 172.20.10.3 (Admin)
+[Thu Nov 13 22:24:15 2025] Client 172.20.10.3 (Admin): USERNAME:engji
+[Thu Nov 13 22:25:15 2025] Client 172.20.10.3 (Admin): PING
+[Thu Nov 13 22:26:15 2025] Client 172.20.10.3 (Admin): PING
+[Thu Nov 13 22:27:15 2025] Client 172.20.10.3 (Admin): PING
+[Thu Nov 13 22:28:15 2025] Client 172.20.10.3 (Admin): PING
+[Thu Nov 13 22:28:46 2025] Client 172.20.10.3 (Admin): /list
+[Thu Nov 13 22:29:15 2025] Client 172.20.10.3 (Admin): PING
+[Thu Nov 13 22:30:10 2025] Client 172.20.10.3 (Admin): /upload test.txt
+prova1
+[Thu Nov 13 22:30:15 2025] Client 172.20.10.3 (Admin): PING
+[Thu Nov 13 22:30:46 2025] Client 172.20.10.3 (Admin): /download test.txt
+[Thu Nov 13 22:31:04 2025] Client 172.20.10.3 (Admin): /read test.txt
+[Thu Nov 13 22:31:15 2025] Client 172.20.10.3 (Admin): PING
+[Thu Nov 13 22:31:22 2025] Client 172.20.10.3 (Admin): /search pr/search pr
+[Thu Nov 13 22:31:29 2025] Client 172.20.10.3 (Admin): /search prov
+[Thu Nov 13 22:31:58 2025] Client 172.20.10.3 (Admin): /search tes
+[Thu Nov 13 22:32:15 2025] Client 172.20.10.3 (Admin): PING
+[Thu Nov 13 22:32:59 2025] Client 172.20.10.3 (Admin): /info test.txt
+[Thu Nov 13 22:33:06 2025] Client 172.20.10.3 (Admin): /delete test.txt
+[Thu Nov 13 22:33:15 2025] Client 172.20.10.3 (Admin): PING
+[Thu Nov 13 22:33:20 2025] Client 172.20.10.3 disconnected
+[Thu Nov 13 22:34:28 2025] New client connected: 172.20.10.12 (User)
+[Thu Nov 13 22:35:11 2025] Client 172.20.10.12 (User): read test.txt
+[Thu Nov 13 22:35:25 2025] Client 172.20.10.12 (User): /read test.txt
+[Thu Nov 13 22:35:28 2025] Client 172.20.10.12 (User): PING
+[Thu Nov 13 22:35:48 2025] Client 172.20.10.12 disconnected
+[Thu Nov 13 22:35:53 2025] New client connected: 172.20.10.3 (User)
+[Thu Nov 13 22:35:55 2025] Client 172.20.10.3 (User): USERNAME:engji
+[Thu Nov 13 22:36:06 2025] Client 172.20.10.3 (User): /read test.txt
+[Thu Nov 13 22:36:37 2025] Client 172.20.10.3 (User): /upload test.txt
+prova1
+[Thu Nov 13 22:37:02 2025] Server started
+[Thu Nov 13 22:37:13 2025] New client connected: 172.20.10.3 (Admin)
+[Thu Nov 13 22:37:16 2025] Client 172.20.10.3 (Admin): USERNAME:engji
+[Thu Nov 13 22:37:32 2025] New client connected: 172.20.10.12 (User)
+[Thu Nov 13 22:38:12 2025] Client 172.20.10.3 (Admin): /upload prova2.txt
+random test
+[Thu Nov 13 22:38:16 2025] Client 172.20.10.3 (Admin): PING
+[Thu Nov 13 22:38:22 2025] Client 172.20.10.3 (Admin): r/read prova2.txt
+[Thu Nov 13 22:38:32 2025] Client 172.20.10.12 (User): PING
+[Thu Nov 13 22:38:43 2025] Client 172.20.10.12 (User): /read prova/read prova2.txt
+[Thu Nov 13 22:38:56 2025] Client 172.20.10.12 disconnected
+[Thu Nov 13 22:39:16 2025] New client connected: 172.20.10.12 (User)
+[Thu Nov 13 22:39:16 2025] Client 172.20.10.3 (Admin): PING
+[Thu Nov 13 22:39:26 2025] Client 172.20.10.12 (User): /read prova2.txt
+[Thu Nov 13 22:40:01 2025] Client 172.20.10.12 (User): /read server.txt
+[Thu Nov 13 22:40:16 2025] Client 172.20.10.12 (User): PING
+[Thu Nov 13 22:40:16 2025] Client 172.20.10.3 (Admin): PING
+[Thu Nov 13 22:40:52 2025] Client 172.20.10.12 disconnected
+[Thu Nov 13 22:41:16 2025] New client connected: 172.20.10.12 (User)
+[Thu Nov 13 22:41:16 2025] Client 172.20.10.3 (Admin): PING
+[Thu Nov 13 22:41:57 2025] Client 172.20.10.12 (User): /read server.txt
+[Thu Nov 13 22:42:15 2025] Client 172.20.10.12 disconnected
+[Thu Nov 13 22:42:16 2025] Client 172.20.10.3 (Admin): PING
+[Thu Nov 13 22:43:16 2025] Client 172.20.10.3 (Admin): PING
+[Thu Nov 13 22:44:16 2025] Client 172.20.10.3 (Admin): PING
+[Thu Nov 13 22:49:22 2025] Client 172.20.10.3 timed out
+[Thu Nov 13 22:49:22 2025] Client 172.20.10.3 disconnected
