@@ -51,3 +51,56 @@ void log_message(const char *msg) {
         fflush(log_file);
     }
 }
+
+void handle_list_command(int client_index, char *response) {
+    WIN32_FIND_DATAA find_data;
+    HANDLE hFind;
+    char search_path[512];
+
+    sprintf(search_path, "%s\\*", SERVER_DIR);
+
+    strcpy(response, "Files in server directory:\n");
+
+    hFind = FindFirstFileA(search_path, &find_data);
+    if (hFind != INVALID_HANDLE_VALUE) {
+        do {
+            if (strcmp(find_data.cFileName, ".") != 0 && strcmp(find_data.cFileName, "..") != 0) {
+                strcat(response, "  - ");
+                strcat(response, find_data.cFileName);
+                strcat(response, "\n");
+            }
+        } while (FindNextFileA(hFind, &find_data));
+        FindClose(hFind);
+    } else {
+        strcpy(response, "Error: Cannot list directory\n");
+    }
+}
+
+void handle_read_command(int client_index, char *filename, char *response) {
+    char filepath[512];
+    sprintf(filepath, "%s\\%s", SERVER_DIR, filename);
+
+    FILE *file = fopen(filepath, "rb");
+    if (!file) {
+        sprintf(response, "Error: Cannot open file '%s'\n", filename);
+        return;
+    }
+
+    fseek(file, 0, SEEK_END);
+    long filesize = ftell(file);
+    fseek(file, 0, SEEK_SET);
+
+    if (filesize > BUFFER_SIZE - 200) {
+        sprintf(response, "Error: File too large (max %d bytes)\n", BUFFER_SIZE - 200);
+        fclose(file);
+        return;
+    }
+
+    sprintf(response, "Content of '%s':\n---\n", filename);
+    size_t offset = strlen(response);
+    size_t read_bytes = fread(response + offset, 1, filesize, file);
+    response[offset + read_bytes] = '\0';
+    strcat(response, "\n---\n");
+
+    fclose(file);
+}
