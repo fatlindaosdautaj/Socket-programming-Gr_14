@@ -51,6 +51,50 @@ void log_message(const char *msg) {
         fflush(log_file);
     }
 }
+void write_stats() {
+    FILE *stats_file = fopen("server_stats.txt", "w");
+    if (!stats_file) return;
+
+    time_t now = time(NULL);
+    fprintf(stats_file, "=== SERVER STATISTICS ===\n");
+    fprintf(stats_file, "Generated: %s\n", ctime(&now));
+    fprintf(stats_file, "Active Connections: %d/%d\n\n", client_count, MAX_CLIENTS);
+
+    EnterCriticalSection(&cs);
+    for (int i = 0; i < MAX_CLIENTS; i++) {
+        if (clients[i].active) {
+            fprintf(stats_file, "Client %d:\n", i + 1);
+            fprintf(stats_file, "  IP: %s\n", clients[i].ip);
+            fprintf(stats_file, "  Type: %s\n", clients[i].is_admin ? "Admin" : "User");
+            fprintf(stats_file, "  Messages: %lu\n", clients[i].messages_received);
+            fprintf(stats_file, "  Bytes Sent: %lu\n", clients[i].bytes_sent);
+            fprintf(stats_file, "  Bytes Received: %lu\n", clients[i].bytes_received);
+            fprintf(stats_file, "\n");
+        }
+    }
+    LeaveCriticalSection(&cs);
+
+    fclose(stats_file);
+}
+
+void print_stats() {
+    printf("\n=== CURRENT STATISTICS ===\n");
+    printf("Active Connections: %d/%d\n\n", client_count, MAX_CLIENTS);
+
+    EnterCriticalSection(&cs);
+    for (int i = 0; i < MAX_CLIENTS; i++) {
+        if (clients[i].active) {
+            printf("Client %d: %s (%s) - Messages: %lu, Sent: %lu bytes, Recv: %lu bytes\n",
+                   i + 1, clients[i].ip,
+                   clients[i].is_admin ? "Admin" : "User",
+                   clients[i].messages_received,
+                   clients[i].bytes_sent,
+                   clients[i].bytes_received);
+        }
+    }
+    LeaveCriticalSection(&cs);
+    printf("\n");
+}
 
 void handle_list_command(int client_index, char *response) {
     WIN32_FIND_DATAA find_data;
