@@ -99,3 +99,27 @@ unsigned __stdcall receive_thread(void *arg) {
 
     return 0;
 }
+
+unsigned __stdcall ping_thread(void *arg) {
+    while (running) {
+        Sleep(60000);
+        if (running) {
+            send(client_socket, "PING", 4, 0);
+        }
+    }
+    return 0;
+}
+
+void print_help() {
+    printf("\n=== ADMIN COMMANDS ===\n");
+    printf("/list                    - List all files in server directory\n");
+    printf("/read <filename>         - Read content of a file\n");
+    printf("/upload <filename>       - Upload a file to server\n");
+    printf("/download <filename>     - Download a file from server\n");
+    printf("/delete <filename>       - Delete a file from server\n");
+    printf("/search <keyword>        - Search for files by keyword\n");
+    printf("/info <filename>         - Show file information\n");
+    printf("/help                    - Show this help\n");
+    printf("/quit                    - Exit client\n");
+    printf("======================\n\n");
+}
