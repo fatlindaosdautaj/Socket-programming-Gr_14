@@ -70,3 +70,36 @@ void print_help()
     printf("Note: You can send any text message to the server\n");
     printf("=====================\n\n");
 }
+
+int main()
+{
+    WSADATA wsa;
+    struct sockaddr_in server_addr;
+
+    printf("=== TCP CLIENT (USER) ===\n");
+    printf("Initializing...\n");
+
+    if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
+    {
+        printf("WSAStartup failed: %d\n", WSAGetLastError());
+        return 1;
+    }
+
+    client_socket = socket(AF_INET, SOCK_STREAM, 0);
+    if (client_socket == INVALID_SOCKET)
+    {
+        printf("Socket creation failed: %d\n", WSAGetLastError());
+        WSACleanup();
+        return 1;
+    }
+
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_port = htons(SERVER_PORT);
+    server_addr.sin_addr.s_addr = inet_addr(SERVER_IP);
+    printf("Connecting to %s:%d...\n", SERVER_IP, SERVER_PORT);
+
+    if (connect(client_socket, (struct sockaddr *)&server_addr, sizeof(server_addr)) == SOCKET_ERROR)
+    {
+        printf("Connection failed: %d\n", WSAGetLastError());
+        printf("\nMake sure the server is running!\n");
+        closesocket(client_socket);
