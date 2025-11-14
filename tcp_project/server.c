@@ -148,3 +148,63 @@ void handle_read_command(int client_index, char *filename, char *response) {
 
     fclose(file);
 }
+void handle_upload_command(int client_index, char *data, char *response) {
+    char filename[256];
+    char *file_content;
+
+    char *newline = strchr(data, '\n');
+    if (!newline) {
+        strcpy(response, "Error: Invalid upload format\n");
+        return;
+    }
+
+    size_t filename_len = newline - data;
+    strncpy(filename, data, filename_len);
+    filename[filename_len] = '\0';
+
+    file_content = newline + 1;
+
+    char filepath[512];
+    sprintf(filepath, "%s\\%s", SERVER_DIR, filename);
+
+    FILE *file = fopen(filepath, "wb");
+    if (!file) {
+        sprintf(response, "Error: Cannot create file '%s'\n", filename);
+        return;
+    }
+
+    fwrite(file_content, 1, strlen(file_content), file);
+    fclose(file);
+
+    sprintf(response, "File '%s' uploaded successfully\n", filename);
+}
+
+void handle_download_command(int client_index, char *filename, SOCKET client_socket) {
+    char filepath[512];
+    sprintf(filepath, "%s\\%s", SERVER_DIR, filename);
+
+    FILE *file = fopen(filepath, "rb");
+    if (!file) {
+        char error_msg[256];
+        sprintf(error_msg, "ERROR:Cannot open file '%s'", filename);
+        send(client_socket, error_msg, strlen(error_msg), 0);
+        return;
+    }
+
+    fseek(file, 0, SEEK_END);
+    long filesize = ftell(file);
+    fseek(file, 0, SEEK_SET);
+
+    char header[256];
+    sprintf(header, "DOWNLOAD:%s|%ld\n", filename, filesize);
+    send(client_socket, header, strlen(header), 0);
+
+    char buffer[BUFFER_SIZE];
+    size_t bytes_read;
+    while ((bytes_read = fread(buffer, 1, BUFFER_SIZE, file)) > 0) {
+        send(client_socket, buffer, bytes_read, 0);
+        clients[client_index].bytes_sent += bytes_read;
+    }
+
+    fclose(file);
+}
