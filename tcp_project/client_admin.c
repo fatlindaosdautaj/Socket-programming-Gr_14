@@ -123,3 +123,33 @@ void print_help() {
     printf("/quit                    - Exit client\n");
     printf("======================\n\n");
 }
+
+void handle_upload(char *filename) {
+    FILE *file = fopen(filename, "rb");
+    if (!file) {
+        printf("Error: Cannot open file '%s'\n", filename);
+        return;
+    }
+
+    fseek(file, 0, SEEK_END);
+    long filesize = ftell(file);
+    fseek(file, 0, SEEK_SET);
+
+    if (filesize > BUFFER_SIZE - 256) {
+        printf("Error: File too large (max %d bytes)\n", BUFFER_SIZE - 256);
+        fclose(file);
+        return;
+    }
+
+    char *buffer = malloc(BUFFER_SIZE);
+    sprintf(buffer, "/upload %s\n", filename);
+    size_t offset = strlen(buffer);
+
+    size_t bytes_read = fread(buffer + offset, 1, filesize, file);
+    fclose(file);
+
+    send(client_socket, buffer, offset + bytes_read, 0);
+    free(buffer);
+
+    printf("Upload request sent...\n");
+}
