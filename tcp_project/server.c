@@ -208,3 +208,43 @@ void handle_download_command(int client_index, char *filename, SOCKET client_soc
 
     fclose(file);
 }
+
+void handle_delete_command(int client_index, char *filename, char *response) {
+    char filepath[512];
+    sprintf(filepath, "%s\\%s", SERVER_DIR, filename);
+
+    if (DeleteFileA(filepath)) {
+        sprintf(response, "File '%s' deleted successfully\n", filename);
+    } else {
+        sprintf(response, "Error: Cannot delete file '%s'\n", filename);
+    }
+}
+
+void handle_search_command(int client_index, char *keyword, char *response) {
+    WIN32_FIND_DATAA find_data;
+    HANDLE hFind;
+    char search_path[512];
+    int found = 0;
+
+    sprintf(search_path, "%s\\*", SERVER_DIR);
+    sprintf(response, "Files matching '%s':\n", keyword);
+
+    hFind = FindFirstFileA(search_path, &find_data);
+    if (hFind != INVALID_HANDLE_VALUE) {
+        do {
+            if (strcmp(find_data.cFileName, ".") != 0 && strcmp(find_data.cFileName, "..") != 0) {
+                if (strstr(find_data.cFileName, keyword) != NULL) {
+                    strcat(response, "  - ");
+                    strcat(response, find_data.cFileName);
+                    strcat(response, "\n");
+                    found = 1;
+                }
+            }
+        } while (FindNextFileA(hFind, &find_data));
+        FindClose(hFind);
+    }
+
+    if (!found) {
+        strcat(response, "  No files found\n");
+    }
+}
