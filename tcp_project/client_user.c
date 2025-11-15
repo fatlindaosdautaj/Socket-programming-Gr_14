@@ -103,3 +103,42 @@ int main()
         printf("Connection failed: %d\n", WSAGetLastError());
         printf("\nMake sure the server is running!\n");
         closesocket(client_socket);
+        WSACleanup();
+        return 1;
+    }
+
+    printf("Connected successfully!\n\n");
+
+    char username[256];
+    printf("Enter username: ");
+    fgets(username, sizeof(username), stdin);
+    username[strcspn(username, "\n")] = 0;
+    
+    char login_msg[512];
+    sprintf(login_msg, "USERNAME:%s\n", username);
+    send(client_socket, login_msg, strlen(login_msg), 0);
+
+    _beginthreadex(NULL, 0, receive_thread, NULL, 0, NULL);
+    _beginthreadex(NULL, 0, ping_thread, NULL, 0, NULL);
+
+    Sleep(500);
+
+    print_help();
+
+    char input[BUFFER_SIZE];
+
+    while (running)
+    {
+        printf("> ");
+        fflush(stdout);
+
+        if (fgets(input, sizeof(input), stdin) == NULL)
+        {
+            break;
+        }
+
+        input[strcspn(input, "\n")] = 0;
+
+        if (strlen(input) == 0)
+        {
+            continue;
