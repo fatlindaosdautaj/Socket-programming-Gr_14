@@ -142,3 +142,35 @@ int main()
         if (strlen(input) == 0)
         {
             continue;
+        }
+
+        if (strcmp(input, "/help") == 0)
+        {
+            print_help();
+            continue;
+        }
+
+        if (strcmp(input, "/quit") == 0)
+        {
+            printf("Disconnecting...\n");
+            break;
+        }
+
+        strcat(input, "\n");
+        int sent = send(client_socket, input, strlen(input), 0);
+
+        if (sent == SOCKET_ERROR)
+        {
+            printf("Send failed: %d\n", WSAGetLastError());
+            break;
+        }
+    }
+
+    running = 0;
+    closesocket(client_socket);
+    WSACleanup();
+
+    printf("Disconnected.\n");
+
+    return 0;
+}
