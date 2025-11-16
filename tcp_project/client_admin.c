@@ -16,7 +16,7 @@
 SOCKET client_socket;
 int running = 1;
 
-//Thread qe pranon mesazhe nga serveri
+
 unsigned __stdcall receive_thread(void *arg) {
     char buffer[BUFFER_SIZE];
 
@@ -25,7 +25,7 @@ unsigned __stdcall receive_thread(void *arg) {
         memset(buffer, 0, BUFFER_SIZE);
         int bytes_received = recv(client_socket, buffer, BUFFER_SIZE - 1, 0);
 
-        //nese serveri e mbyll lidhjen
+        
         if (bytes_received <= 0) {
             if (running) {
                 printf("\n[Connection lost]\n");
@@ -36,7 +36,7 @@ unsigned __stdcall receive_thread(void *arg) {
 
         buffer[bytes_received] = '\0';
         
-        //kontroli per download
+        
          if (strncmp(buffer, "DOWNLOAD:", 9) == 0) {
             char *fileinfo = buffer + 9;
             char filename[256];
@@ -54,7 +54,7 @@ unsigned __stdcall receive_thread(void *arg) {
                 filesize = atol(fileinfo);
             }
             
-            // krijon folderin downloads
+            
             CreateDirectoryA(DOWNLOADS_DIR, NULL);
             
 
