@@ -1,4 +1,4 @@
-# TCP File-Server (Rrjetat Kompjuterike - Projekt 2)
+# TCP Socket Programming
 
 [![C](https://img.shields.io/badge/Language-C-blue.svg)](https://en.wikipedia.org/wiki/C_(programming_language))
 [![Windows](https://img.shields.io/badge/Platform-Windows-orange.svg)](https://www.microsoft.com/windows)
@@ -112,13 +112,14 @@ Monitoring & logs
 - server_stats.txt — periodically updated snapshot with timestamp, active connections, per-client messages and bytes
 
 ## Screenshots 
-- assets\screenshots\server 1.png
-- assets\screenshots\server 2.png
-- assets\screenshots\server 3.png
-- assets\screenshots\admin 1.png
-- assets\screenshots\admin 2.png
-- assets\screenshots\admin 3.png
-- assets\screenshots\user.png
+<img width="1781" height="351" alt="server 1" src="https://github.com/user-attachments/assets/a552c3bf-7a76-4ff9-87d8-a7f36356c989" />
+<img width="1482" height="319" alt="server 2" src="https://github.com/user-attachments/assets/3c5f1c9f-6a47-4f44-8724-5fd9936c887c" />
+<img width="945" height="208" alt="server 3" src="https://github.com/user-attachments/assets/16a81696-e64d-406f-8e08-5181c523a328" />
+<img width="1499" height="670" alt="admin 1" src="https://github.com/user-attachments/assets/d1863046-873a-43b7-99cf-894566a53112" />
+<img width="1354" height="516" alt="admin 2" src="https://github.com/user-attachments/assets/39a8730d-0d49-4dc1-a2c0-ff1965980800" />
+<img width="1339" height="795" alt="admin 3" src="https://github.com/user-attachments/assets/4cc8e193-ee3c-4f09-8d09-e1cc1ecdd0da" />
+<img width="1672" height="922" alt="user" src="https://github.com/user-attachments/assets/4c6599ca-2715-426c-8481-f118a767d595" />
+
 
 ## Quick walkthrough
 1. Start server on machine A with .\server.exe
