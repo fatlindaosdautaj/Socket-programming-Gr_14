@@ -443,6 +443,8 @@ unsigned __stdcall command_thread(void *arg) {
 }
 
 int main() {
+
+
     WSADATA wsa;
     SOCKET server_socket;
     struct sockaddr_in server_addr, client_addr;
@@ -450,6 +452,7 @@ int main() {
 
     printf("=== TCP SERVER ===\n");
     printf("Initializing...\n");
+
 
     if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0) {
         printf("WSAStartup failed: %d\n", WSAGetLastError());
@@ -522,7 +525,7 @@ int main() {
                 client_index = i;
                 clients[i].socket = client_socket;
                 clients[i].address = client_addr;
-                server_addr.sin_addr.s_addr = inet_addr(SERVER_IP);
+                 server_addr.sin_addr.s_addr = inet_addr(SERVER_IP);
                 clients[i].is_admin = !admin_connected ? 1 : 0;
                 clients[i].active = 1;
                 clients[i].last_activity = time(NULL);
