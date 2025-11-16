@@ -441,3 +441,123 @@ unsigned __stdcall command_thread(void *arg) {
     }
     return 0;
 }
+
+int main() {
+    WSADATA wsa;
+    SOCKET server_socket;
+    struct sockaddr_in server_addr, client_addr;
+    int addr_len = sizeof(client_addr);
+
+    printf("=== TCP SERVER ===\n");
+    printf("Initializing...\n");
+
+    if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0) {
+        printf("WSAStartup failed: %d\n", WSAGetLastError());
+        return 1;
+    }
+
+    InitializeCriticalSection(&cs);
+    init_server_directory();
+
+    log_file = fopen("server_log.txt", "a");
+
+    memset(clients, 0, sizeof(clients));
+
+    server_socket = socket(AF_INET, SOCK_STREAM, 0);
+    if (server_socket == INVALID_SOCKET) {
+        printf("Socket creation failed: %d\n", WSAGetLastError());
+        WSACleanup();
+        return 1;
+    }
+
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_addr.s_addr = INADDR_ANY;
+    server_addr.sin_port = htons(SERVER_PORT);
+
+    if (bind(server_socket, (struct sockaddr *)&server_addr, sizeof(server_addr)) == SOCKET_ERROR) {
+        printf("Bind failed: %d\n", WSAGetLastError());
+        closesocket(server_socket);
+        WSACleanup();
+        return 1;
+    }
+
+    if (listen(server_socket, MAX_CLIENTS) == SOCKET_ERROR) {
+        printf("Listen failed: %d\n", WSAGetLastError());
+        closesocket(server_socket);
+        WSACleanup();
+        return 1;
+    }
+
+    printf("Server listening on %s:%d\n", SERVER_IP, SERVER_PORT);
+    printf("Max clients: %d\n", MAX_CLIENTS);
+    printf("Server directory: %s\n", SERVER_DIR);
+    printf("\nCommands: STATS, QUIT\n\n");
+
+    log_message("Server started");
+
+    _beginthreadex(NULL, 0, monitor_thread, NULL, 0, NULL);
+    _beginthreadex(NULL, 0, command_thread, NULL, 0, NULL);
+
+    int admin_connected = 0;
+
+    while (1) {
+        SOCKET client_socket = accept(server_socket, (struct sockaddr *)&client_addr, &addr_len);
+
+        if (client_socket == INVALID_SOCKET) {
+            continue;
+        }
+
+        if (client_count >= MAX_CLIENTS) {
+            char *msg = "Server full. Try again later.\n";
+            send(client_socket, msg, strlen(msg), 0);
+            closesocket(client_socket);
+            log_message("Connection rejected: server full");
+            continue;
+        }
+
+        int client_index = -1;
+        EnterCriticalSection(&cs);
+        for (int i = 0; i < MAX_CLIENTS; i++) {
+            if (!clients[i].active) {
+                client_index = i;
+                clients[i].socket = client_socket;
+                clients[i].address = client_addr;
+                server_addr.sin_addr.s_addr = inet_addr(SERVER_IP);
+                clients[i].is_admin = !admin_connected ? 1 : 0;
+                clients[i].active = 1;
+                clients[i].last_activity = time(NULL);
+                clients[i].messages_received = 0;
+                clients[i].bytes_sent = 0;
+                clients[i].bytes_received = 0;
+                client_count++;
+
+                if (clients[i].is_admin) {
+                    admin_connected = 1;
+                }
+
+                break;
+            }
+        }
+        LeaveCriticalSection(&cs);
+
+        char msg[256];
+        sprintf(msg, "New client connected: %s (%s)",
+                clients[client_index].ip,
+                clients[client_index].is_admin ? "Admin" : "User");
+        log_message(msg);
+
+        int *index = malloc(sizeof(int));
+        *index = client_index;
+        _beginthreadex(NULL, 0, handle_client, index, 0, NULL);
+    }
+
+    closesocket(server_socket);
+    WSACleanup();
+    DeleteCriticalSection(&cs);
+
+    if (log_file) {
+        fclose(log_file);
+    }
+
+    return 0;
+}
