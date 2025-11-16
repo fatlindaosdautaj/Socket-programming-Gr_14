@@ -248,3 +248,31 @@ void handle_search_command(int client_index, char *keyword, char *response) {
         strcat(response, "  No files found\n");
     }
 }
+void handle_info_command(int client_index, char *filename, char *response) {
+    char filepath[512];
+    sprintf(filepath, "%s\\%s", SERVER_DIR, filename);
+
+    WIN32_FIND_DATAA find_data;
+    HANDLE hFind = FindFirstFileA(filepath, &find_data);
+
+    if (hFind == INVALID_HANDLE_VALUE) {
+        sprintf(response, "Error: File '%s' not found\n", filename);
+        return;
+    }
+
+    SYSTEMTIME st_create, st_modify;
+    FileTimeToSystemTime(&find_data.ftCreationTime, &st_create);
+    FileTimeToSystemTime(&find_data.ftLastWriteTime, &st_modify);
+
+    sprintf(response, "File Info: %s\n", filename);
+    sprintf(response + strlen(response), "  Size: %lu bytes\n",
+            (find_data.nFileSizeHigh * (MAXDWORD + 1)) + find_data.nFileSizeLow);
+    sprintf(response + strlen(response), "  Created: %04d-%02d-%02d %02d:%02d:%02d\n",
+            st_create.wYear, st_create.wMonth, st_create.wDay,
+            st_create.wHour, st_create.wMinute, st_create.wSecond);
+    sprintf(response + strlen(response), "  Modified: %04d-%02d-%02d %02d:%02d:%02d\n",
+            st_modify.wYear, st_modify.wMonth, st_modify.wDay,
+            st_modify.wHour, st_modify.wMinute, st_modify.wSecond);
+
+    FindClose(hFind);
+}
